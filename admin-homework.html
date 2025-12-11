@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daffodil Admin – Manage Homework</title>
+
+<style>
+    body{
+        margin:0;
+        font-family:"Poppins",sans-serif;
+        background:#eef2f8;
+    }
+
+    .header{
+        display:flex;
+        align-items:center;
+        background:#1a73e8;
+        color:white;
+        padding:15px;
+        font-size:18px;
+        font-weight:600;
+        gap:10px;
+    }
+
+    .container{
+        padding:20px;
+    }
+
+    input, textarea{
+        width:100%;
+        padding:12px;
+        border:1px solid #ccc;
+        border-radius:10px;
+        margin-bottom:12px;
+    }
+
+    button{
+        width:100%;
+        padding:12px;
+        background:#1a73e8;
+        color:white;
+        font-size:16px;
+        border:none;
+        border-radius:10px;
+        font-weight:600;
+        cursor:pointer;
+        margin-bottom:10px;
+    }
+
+    .hw-card{
+        background:#fff;
+        border-radius:12px;
+        padding:15px;
+        margin-bottom:15px;
+        box-shadow:0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .hw-img{
+        width:100%;
+        border-radius:10px;
+        margin-top:10px;
+    }
+
+    .btn-small{
+        padding:8px;
+        font-size:14px;
+        margin-top:8px;
+        border-radius:8px;
+    }
+
+    .edit-btn{ background:#fbbc04; color:#000; }
+    .delete-btn{ background:#ea4335; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    Admin – Manage Homework
+</div>
+
+<div class="container">
+
+    <h3>Add New Homework</h3>
+    <textarea id="hwText" placeholder="Enter homework description"></textarea>
+    <input type="file" accept="image/*" id="hwImage">
+    <button onclick="uploadHomework()">Upload Homework</button>
+
+    <hr style="margin:20px 0;">
+
+    <h3>All Homeworks</h3>
+    <div id="hwList"></div>
+</div>
+
+
+<script>
+function loadHomework() {
+    const hwList = document.getElementById("hwList");
+    hwList.innerHTML = "";
+
+    let data = JSON.parse(localStorage.getItem("homework")) || [];
+
+    data.forEach((hw, index) => {
+        const card = document.createElement("div");
+        card.className = "hw-card";
+
+        card.innerHTML = `
+            <div><strong>${hw.text}</strong></div>
+            <div style="font-size:13px; color:#666; margin-top:5px;">
+                ${hw.datetime}
+            </div>
+            <img class="hw-img" src="${hw.image}">
+            <button class="btn-small edit-btn" onclick="editHomework(${index})">Edit</button>
+            <button class="btn-small delete-btn" onclick="deleteHomework(${index})">Delete</button>
+        `;
+
+        hwList.appendChild(card);
+    });
+}
+
+function uploadHomework() {
+    const text = document.getElementById("hwText").value;
+    const imageFile = document.getElementById("hwImage").files[0];
+
+    if (!text || !imageFile) {
+        alert("Please enter text and select an image.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64Img = e.target.result;
+
+        let homework = JSON.parse(localStorage.getItem("homework")) || [];
+
+        const now = new Date();
+        const dateTime = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+
+        homework.unshift({
+            text: text,
+            image: base64Img,
+            datetime: dateTime
+        });
+
+        localStorage.setItem("homework", JSON.stringify(homework));
+
+        alert("Homework Uploaded!");
+        document.getElementById("hwText").value = "";
+        document.getElementById("hwImage").value = "";
+
+        loadHomework();
+    };
+
+    reader.readAsDataURL(imageFile);
+}
+
+function deleteHomework(index) {
+    let homework = JSON.parse(localStorage.getItem("homework")) || [];
+    homework.splice(index, 1);
+    localStorage.setItem("homework", JSON.stringify(homework));
+    loadHomework();
+}
+
+function editHomework(index) {
+    let homework = JSON.parse(localStorage.getItem("homework")) || [];
+
+    let newText = prompt("Edit Homework Text:", homework[index].text);
+    if (newText === null || newText.trim() === "") return;
+
+    homework[index].text = newText;
+
+    localStorage.setItem("homework", JSON.stringify(homework));
+    alert("Homework Updated!");
+    loadHomework();
+}
+
+loadHomework();
+</script>
+
+</body>
+</html>

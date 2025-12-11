@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – Upload Notice</title>
+
+<style>
+    body{
+        margin:0;
+        font-family:"Poppins",sans-serif;
+        background:#eef2f8;
+    }
+
+    .header{
+        display:flex;
+        align-items:center;
+        background:#1a73e8;
+        color:white;
+        padding:15px;
+        font-size:18px;
+        font-weight:600;
+        gap:10px;
+    }
+
+    .container{
+        padding:20px;
+    }
+
+    input, textarea{
+        width:100%;
+        padding:12px;
+        border:1px solid #ccc;
+        border-radius:10px;
+        margin-bottom:12px;
+    }
+
+    button{
+        width:100%;
+        padding:12px;
+        background:#1a73e8;
+        color:white;
+        font-size:16px;
+        border:none;
+        border-radius:10px;
+        font-weight:600;
+        cursor:pointer;
+        margin-bottom:10px;
+    }
+
+    .notice-card{
+        background:#fff;
+        border-radius:12px;
+        padding:15px;
+        margin-bottom:15px;
+        box-shadow:0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .notice-img{
+        width:100%;
+        border-radius:10px;
+        margin-top:10px;
+    }
+
+    .btn-small{
+        padding:8px;
+        font-size:14px;
+        margin-top:8px;
+        border-radius:8px;
+    }
+
+    .edit-btn{ background:#fbbc04; color:#000; }
+    .delete-btn{ background:#ea4335; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    📢 Admin – Manage Notices
+</div>
+
+<div class="container">
+
+    <h3>➕ Add New Notice</h3>
+
+    <input type="text" id="noticeTitle" placeholder="Notice Title">
+    <textarea id="noticeDesc" placeholder="Notice Description"></textarea>
+    <input type="file" accept="image/*" id="noticeImage">
+
+    <button onclick="uploadNotice()">Upload Notice</button>
+
+    <hr style="margin:20px 0;">
+
+    <h3>📄 All Notices</h3>
+    <div id="noticeList"></div>
+</div>
+
+
+<script>
+function loadNotices() {
+    const list = document.getElementById("noticeList");
+    list.innerHTML = "";
+
+    let notices = JSON.parse(localStorage.getItem("notices")) || [];
+
+    notices.forEach((n, index) => {
+        const card = document.createElement("div");
+        card.className = "notice-card";
+
+        card.innerHTML = `
+            <h3 style="margin:0; font-size:18px;">${n.title}</h3>
+            <p style="margin:5px 0;">${n.desc}</p>
+            <div style="font-size:13px; color:#666;">
+                ${n.datetime}
+            </div>
+            <img class="notice-img" src="${n.image}">
+            <button class="btn-small edit-btn" onclick="editNotice(${index})">Edit</button>
+            <button class="btn-small delete-btn" onclick="deleteNotice(${index})">Delete</button>
+        `;
+
+        list.appendChild(card);
+    });
+}
+
+function uploadNotice() {
+    const title = document.getElementById("noticeTitle").value;
+    const desc = document.getElementById("noticeDesc").value;
+    const imageFile = document.getElementById("noticeImage").files[0];
+
+    if (!title || !desc || !imageFile) {
+        alert("Please fill Title, Description and Image.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64Img = e.target.result;
+
+        let notices = JSON.parse(localStorage.getItem("notices")) || [];
+
+        const now = new Date();
+        const dateTime = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+
+        notices.unshift({
+            title: title,
+            desc: desc,
+            image: base64Img,
+            datetime: dateTime
+        });
+
+        localStorage.setItem("notices", JSON.stringify(notices));
+
+        alert("Notice Uploaded!");
+
+        document.getElementById("noticeTitle").value = "";
+        document.getElementById("noticeDesc").value = "";
+        document.getElementById("noticeImage").value = "";
+
+        loadNotices();
+    };
+
+    reader.readAsDataURL(imageFile);
+}
+
+function deleteNotice(index) {
+    let notices = JSON.parse(localStorage.getItem("notices")) || [];
+    notices.splice(index, 1);
+    localStorage.setItem("notices", JSON.stringify(notices));
+    loadNotices();
+}
+
+function editNotice(index) {
+    let notices = JSON.parse(localStorage.getItem("notices")) || [];
+
+    let newTitle = prompt("Edit Title:", notices[index].title);
+    if (!newTitle) return;
+
+    let newDesc = prompt("Edit Description:", notices[index].desc);
+    if (!newDesc) return;
+
+    notices[index].title = newTitle;
+    notices[index].desc = newDesc;
+
+    localStorage.setItem("notices", JSON.stringify(notices));
+    alert("Notice Updated!");
+    loadNotices();
+}
+
+loadNotices();
+</script>
+
+</body>
+</html>

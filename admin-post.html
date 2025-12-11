@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Upload / Edit Post</title>
+
+<style>
+    body{
+        margin:0;
+        background:#eef1f6;
+        font-family:"Poppins", sans-serif;
+    }
+
+    .header{
+        background:#fff;
+        padding:12px 15px;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    }
+    .header img{
+        width:40px;
+        height:40px;
+    }
+
+    .box{
+        background:#fff;
+        margin:20px;
+        padding:20px;
+        border-radius:12px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    input, textarea{
+        width:100%;
+        padding:12px;
+        margin-top:10px;
+        border-radius:8px;
+        border:1px solid #ccc;
+        font-size:14px;
+    }
+
+    button{
+        margin-top:15px;
+        padding:12px;
+        width:100%;
+        background:#0066ff;
+        color:#fff;
+        border:none;
+        border-radius:8px;
+        font-size:16px;
+        cursor:pointer;
+    }
+
+    .post{
+        background:#fff;
+        margin:15px 0;
+        padding:15px;
+        border-radius:12px;
+        box-shadow:0 2px 7px rgba(0,0,0,0.1);
+    }
+    .post img{
+        width:100%;
+        border-radius:10px;
+        margin-bottom:10px;
+    }
+    .post-title{
+        font-size:18px;
+        font-weight:600;
+        margin-bottom:5px;
+    }
+    .post-desc{
+        font-size:14px;
+        margin-bottom:8px;
+        color:#333;
+    }
+    .post-date{
+        font-size:12px;
+        color:#777;
+    }
+    .action-btns{
+        display:flex;
+        justify-content:space-between;
+        margin-top:10px;
+    }
+    .btn{
+        padding:8px 15px;
+        border-radius:6px;
+        border:none;
+        cursor:pointer;
+        font-size:14px;
+    }
+    .edit-btn{
+        background:#ffa600;
+        color:white;
+    }
+    .delete-btn{
+        background:#ff2f2f;
+        color:white;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <img src="logo.png">
+    <h2>Admin Panel</h2>
+</div>
+
+<div class="box">
+    <h3 id="modeText">Create New Post</h3>
+
+    <input type="text" id="title" placeholder="Enter Post Title">
+    <textarea id="desc" rows="5" placeholder="Enter Description"></textarea>
+
+    <label>Upload Image</label>
+    <input type="file" id="imageInput" accept="image/*">
+
+    <button onclick="savePost()">Save Post</button>
+</div>
+
+<div class="box">
+    <h3>All Posts</h3>
+    <div id="postContainer"></div>
+</div>
+
+<script>
+let editIndex = null;
+let posts = JSON.parse(localStorage.getItem("school_posts")) || [];
+
+function loadPosts(){
+    let container = document.getElementById("postContainer");
+    container.innerHTML = "";
+
+    posts.forEach((p, index)=>{
+        container.innerHTML += `
+            <div class="post">
+                ${p.image ? `<img src="${p.image}">` : ""}
+                <div class="post-title">${p.title}</div>
+                <div class="post-desc">${p.desc}</div>
+                <div class="post-date">${p.date}</div>
+
+                <div class="action-btns">
+                    <button class="btn edit-btn" onclick="editPost(${index})">Edit</button>
+                    <button class="btn delete-btn" onclick="deletePost(${index})">Delete</button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function deletePost(i){
+    if(confirm("Are you sure you want to delete this post?")){
+        posts.splice(i,1);
+        localStorage.setItem("school_posts", JSON.stringify(posts));
+        loadPosts();
+    }
+}
+
+function editPost(i){
+    editIndex = i;
+    let p = posts[i];
+    document.getElementById("title").value = p.title;
+    document.getElementById("desc").value = p.desc;
+    document.getElementById("modeText").innerText = "Edit Post";
+}
+
+function savePost(){
+    let title = document.getElementById("title").value;
+    let desc = document.getElementById("desc").value;
+    let file = document.getElementById("imageInput").files[0];
+
+    if(title=="" || desc==""){
+        alert("Please fill all fields");
+        return;
+    }
+
+    function submit(image){
+        let date = new Date();
+        let fullDate = date.toLocaleString();
+
+        let postData = {
+            title,
+            desc,
+            image: image,
+            date: fullDate
+        };
+
+        if(editIndex !== null){
+            posts[editIndex] = postData;
+            editIndex = null;
+            document.getElementById("modeText").innerText = "Create New Post";
+        } else {
+            posts.unshift(postData);
+        }
+
+        localStorage.setItem("school_posts", JSON.stringify(posts));
+
+        document.getElementById("title").value = "";
+        document.getElementById("desc").value = "";
+        document.getElementById("imageInput").value = "";
+
+        loadPosts();
+        alert("Post Saved Successfully!");
+    }
+
+    if(file){
+        let reader = new FileReader();
+        reader.onload = function(e){
+            submit(e.target.result);
+        }
+        reader.readAsDataURL(file);
+    } else {
+        submit(editIndex !== null ? posts[editIndex].image : "");
+    }
+}
+
+loadPosts();
+</script>
+
+</body>
+</html>

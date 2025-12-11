@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Info Page</title>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    body{
+        margin:0;
+        font-family:"Poppins", sans-serif;
+        background:linear-gradient(135deg,#6a11cb,#2575fc);
+        color:white;
+        text-align:center;
+        overflow-x:hidden;
+        transition:0.4s;
+    }
+
+    /* LOADING SCREEN */
+    #loader{
+        position:fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background:#000;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:9999;
+    }
+    .spinner{
+        width:70px; height:70px;
+        border:6px solid #fff;
+        border-top:6px solid #2575fc;
+        border-radius:50%;
+        animation:spin 1s linear infinite;
+    }
+    @keyframes spin{
+        100%{transform:rotate(360deg);}
+    }
+
+    /* Neon Glow Title */
+    h1{
+        font-size:36px;
+        margin-top:15px;
+        text-shadow:0 0 10px #fff,0 0 20px #fff,0 0 40px #ff0;
+        animation:glow 2s infinite alternate;
+    }
+    @keyframes glow{
+        from { text-shadow:0 0 10px #fff; }
+        to { text-shadow:0 0 20px #ff0, 0 0 40px #ff0; }
+    }
+
+    /* Logo Animation */
+    .school-logo{
+        width:140px; height:140px;
+        margin-top:20px;
+        border-radius:15px;
+        object-fit:cover;
+        animation:bounce 2s infinite;
+        box-shadow:0 6px 20px rgba(0,0,0,0.4);
+    }
+    @keyframes bounce{
+        0%{transform:translateY(0);}
+        50%{transform:translateY(-15px);}
+        100%{transform:translateY(0);}
+    }
+
+    /* Marquee */
+    .marquee{
+        background:rgba(255,255,255,0.2);
+        padding:10px 0;
+        font-size:17px;
+        margin-top:10px;
+        font-weight:600;
+    }
+
+    /* Admission Banner */
+    .banner{
+        background:#ffbd39;
+        color:black;
+        padding:10px 20px;
+        border-radius:10px;
+        margin-top:15px;
+        font-weight:700;
+        font-size:20px;
+    }
+
+    /* SOCIAL ICONS */
+    .social-icons{
+        display:flex;
+        gap:25px;
+        justify-content:center;
+        margin-top:25px;
+        font-size:28px;
+    }
+    .social-icons i{
+        transition:0.3s;
+    }
+    .social-icons i:hover{
+        transform:scale(1.3);
+        color:#ffeb3b;
+    }
+
+    /* HOME BUTTON */
+    .btn-home{
+        margin-top:25px;
+        padding:12px 28px;
+        border-radius:30px;
+        background:white;
+        border:none;
+        color:#2575fc;
+        font-weight:700;
+        cursor:pointer;
+        transition:0.3s;
+    }
+    .btn-home:hover{
+        background:#ffeb3b;
+        color:#000;
+        transform:scale(1.05);
+    }
+
+    /* AUTO POPUP BOX */
+    #popup{
+        position:fixed;
+        bottom:20px;
+        left:50%;
+        transform:translateX(-50%);
+        background:white;
+        color:black;
+        padding:15px 20px;
+        border-radius:10px;
+        box-shadow:0 4px 20px rgba(0,0,0,0.3);
+        display:none;
+        z-index:999;
+    }
+
+    /* WHATSAPP FLOATING BUTTON */
+    .whatsapp{
+        position:fixed;
+        bottom:25px;
+        right:20px;
+        font-size:45px;
+        color:#25D366;
+        cursor:pointer;
+        z-index:900;
+        text-shadow:0 0 10px #000;
+    }
+
+    /* SOUND BUTTON */
+    .sound-btn{
+        position:fixed;
+        top:20px;
+        right:20px;
+        font-size:28px;
+        cursor:pointer;
+        z-index:900;
+    }
+
+    /* DARK/LIGHT MODE BUTTON */
+    .mode-btn{
+        position:fixed;
+        top:20px;
+        left:20px;
+        font-size:28px;
+        cursor:pointer;
+        z-index:900;
+    }
+
+    /* QR CODE */
+    .qr-box{
+        margin-top:30px;
+    }
+    .qr-box img{
+        width:140px; height:140px;
+        border-radius:10px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.4);
+    }
+</style>
+
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader"><div class="spinner"></div></div>
+
+<!-- SOUND ON/OFF -->
+<div class="sound-btn" onclick="toggleSound()">
+    <i id="soundIcon" class="fa-solid fa-volume-high"></i>
+</div>
+
+<!-- DARK/LIGHT MODE -->
+<div class="mode-btn" onclick="toggleMode()">
+    <i class="fa-solid fa-circle-half-stroke"></i>
+</div>
+
+<!-- WHATSAPP FLOAT BUTTON -->
+<a href="https://wa.me/919999999999" target="_blank">
+    <div class="whatsapp"><i class="fa-brands fa-whatsapp"></i></div>
+</a>
+
+<!-- Auto Audio -->
+<audio id="bgAudio" autoplay loop>
+    <source src="audio.mp3" type="audio/mpeg">
+</audio>
+
+<!-- POPUP NOTICE -->
+<div id="popup">🔔 New Notice: School Timing Updated!</div>
+
+<!-- MARQUEE -->
+<div class="marquee">
+    <marquee>⭐ Welcome to Our School — Admission Open — Latest Notices — Events Coming Soon ⭐</marquee>
+</div>
+
+<!-- LOGO -->
+<img src="logo.png" class="school-logo">
+
+<!-- BANNER -->
+<div class="banner">📢 Admission Open 2025–26</div>
+
+<!-- TITLE -->
+<h1>DAFFODIL PUBLIC SCHOOL</h1>
+
+<!-- CONTACT -->
+<p style="font-size:20px;margin-top:10px;">
+📞 9876543210 <br>
+📍 Dhaka East Champaran Bihar, India 
+</p>
+
+<!-- QR CODE -->
+<div class="qr-box">
+    <img src="S.png" alt="QR Code">
+    <p style="margin-top:8px;"> Principal : Manoj Sir</p>
+</div>
+
+<!-- SOCIAL ICONS -->
+<div class="social-icons">
+    <i class="fa-brands fa-facebook"></i>
+    <i class="fa-brands fa-instagram"></i>
+    <i class="fa-brands fa-youtube"></i>
+</div>
+
+<!-- HOME BUTTON -->
+<button class="btn-home" onclick="location.href='home.html'">Go to Home Page</button>
+
+<script>
+/* REMOVE LOADER */
+setTimeout(() => {
+    document.getElementById("loader").style.display="none";
+}, 2000);
+
+/* AUTO POPUP */
+setTimeout(() => {
+    let p = document.getElementById("popup");
+    p.style.display="block";
+    setTimeout(() => { p.style.display="none"; }, 4000);
+}, 2500);
+
+/* SOUND CONTROL */
+function toggleSound(){
+    let audio=document.getElementById("bgAudio");
+    let icon=document.getElementById("soundIcon");
+    if(audio.muted){
+        audio.muted=false;
+        icon.className="fa-solid fa-volume-high";
+    }else{
+        audio.muted=true;
+        icon.className="fa-solid fa-volume-xmark";
+    }
+}
+
+/* DARK/LIGHT MODE */
+function toggleMode(){
+    if(document.body.style.background=="white"){
+        document.body.style.background="linear-gradient(135deg,#6a11cb,#2575fc)";
+        document.body.style.color="white";
+    }else{
+        document.body.style.background="white";
+        document.body.style.color="black";
+    }
+}
+</script>
+
+</body>
+</html>
