@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Teacher Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;font-family:Arial;background:#eceff1}
+
+/* HEADER */
+header{
+  display:flex;align-items:center;gap:10px;
+  background:#0d47a1;color:#fff;padding:10px
+}
+header img{width:40px;height:40px;border-radius:50%}
+
+/* CHAT */
+#messages{
+  height:calc(100vh - 170px);
+  overflow-y:auto;padding:10px
+}
+.msg{
+  background:#fff;padding:8px;margin-bottom:8px;
+  border-radius:10px
+}
+.msg img{max-width:220px;border-radius:8px;margin-top:5px}
+
+/* FOOTER INPUT */
+footer{
+  height:70px;display:flex;align-items:center;
+  padding:8px;background:#fff;border-top:1px solid #ccc
+}
+.icon-btn{width:45px;height:45px;border:none;background:none}
+.icon-btn img{width:100%;height:100%}
+.text-box{
+  flex:1;margin:0 10px;padding:12px;
+  border-radius:25px;border:1px solid #ccc
+}
+input[type=file]{display:none}
+
+/* ACTION BAR */
+#actionBar{
+  position:fixed;bottom:-80px;left:0;width:100%;
+  background:#ffffff;display:flex;justify-content:space-around;
+  padding:10px;border-top:2px solid #ccc;
+  transition:0.3s
+}
+.action-btn{
+  padding:10px 20px;border-radius:25px;
+  border:none;font-size:16px
+}
+.copy{background:#4caf50;color:#fff}
+.delete{background:#e53935;color:#fff}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png">
+  <b>School Teacher Group</b>
+</header>
+
+<div id="messages"></div>
+
+<footer>
+  <label class="icon-btn">
+    <img src="add.png">
+    <input type="file" id="imgMsg">
+  </label>
+
+  <input class="text-box" id="textMsg" placeholder="Type message...">
+
+  <button class="icon-btn" onclick="sendMsg()">
+    <img src="send.png">
+  </button>
+</footer>
+
+<!-- BOTTOM ACTION BAR -->
+<div id="actionBar">
+  <button class="action-btn copy" onclick="copyMsg()">📋 Copy</button>
+  <button class="action-btn delete" onclick="deleteMsg()">🗑 Delete</button>
+</div>
+
+<script>
+let user=localStorage.getItem("teacherName");
+if(!user) location.href="login.html";
+
+let selectedIndex=null;
+let pressTimer;
+
+function sendMsg(){
+ let text=textMsg.value;
+ let img=imgMsg.files[0];
+ if(!text && !img) return;
+
+ let reader=new FileReader();
+ reader.onload=function(){
+   let chat=JSON.parse(localStorage.getItem("chat")||"[]");
+   chat.push({user,text,img:img?reader.result:""});
+   localStorage.setItem("chat",JSON.stringify(chat));
+   textMsg.value="";imgMsg.value="";
+   loadMsg();
+ }
+ img?reader.readAsDataURL(img):reader.onload();
+}
+
+function loadMsg(){
+ messages.innerHTML="";
+ let chat=JSON.parse(localStorage.getItem("chat")||"[]");
+
+ chat.forEach((m,i)=>{
+   let d=document.createElement("div");
+   d.className="msg";
+   d.innerHTML=`<b>${m.user}</b><br>${m.text||""}`;
+   if(m.img){let im=document.createElement("img");im.src=m.img;d.appendChild(im)}
+
+   // 2 SECOND LONG PRESS
+   d.addEventListener("touchstart",()=>{
+     pressTimer=setTimeout(()=>{
+       selectedIndex=i;
+       actionBar.style.bottom="0";
+     },2000);
+   });
+   d.addEventListener("touchend",()=>clearTimeout(pressTimer));
+
+   messages.appendChild(d);
+ });
+ messages.scrollTop=messages.scrollHeight;
+}
+
+function copyMsg(){
+ let chat=JSON.parse(localStorage.getItem("chat"));
+ navigator.clipboard.writeText(chat[selectedIndex].text||"");
+ closeBar();
+}
+
+function deleteMsg(){
+ let chat=JSON.parse(localStorage.getItem("chat"));
+ chat.splice(selectedIndex,1);
+ localStorage.setItem("chat",JSON.stringify(chat));
+ closeBar(); loadMsg();
+}
+
+function closeBar(){
+ actionBar.style.bottom="-80px";
+ selectedIndex=null;
+}
+
+setInterval(loadMsg,2000);
+</script>
+
+</body>
+</html>
