@@ -2,214 +2,156 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-    body{
-        margin:0;
-        font-family:"Poppins", sans-serif;
-        background:#eef1f6;
-    }
+*{box-sizing:border-box;font-family:Arial,sans-serif;}
+body{margin:0;background:#f2f2f2;}
 
-    /* Header */
-    .header{
-        display:flex;
-        align-items:center;
-        gap:12px;
-        padding:15px;
-        background:#fff;
-        box-shadow:0 3px 8px rgba(0,0,0,0.1);
-    }
-
-    .header img{
-        width:45px;
-        height:45px;
-        border-radius:50%;
-        object-fit:cover;
-    }
-
-    .header h2{
-        margin:0;
-        font-size:22px;
-        font-weight:600;
-        color:#333;
-    }
+/* HEADER */
+.header{
+  background:#5b0a6e;
+  color:#fff;
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+}
+.header img{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  margin-right:10px;
+}
+.header h2{margin:0;font-size:18px;}
 
     /* Marquee */
-    .marq{
-        background:#fff;
-        padding:8px 0;
-        font-size:15px;
-        color:#007bff;
-        font-weight:600;
-        box-shadow:0 3px 8px rgba(0,0,0,0.1);
-    }
-
-    /* Banner */
-    .banner{
-        width:100%;
-        margin:15px auto;
-        border-radius:15px;
-        overflow:hidden;
-    }
-
-    .banner img{
-        width:100%;
-        height:170px;
-        object-fit:cover;
-        display:block;
-    }
-
-    /* Menu Cards */
-    .menu-container{
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:15px;
-        padding:15px;
-    }
-
-    .menu-box{
+    .marq-box{
         background:white;
-        padding:20px;
-        border-radius:15px;
-        text-align:center;
+        padding:10px;
+        margin:15px;
+        border-radius:14px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.08);
+        font-size:17px;
+        font-weight:600;
+        color:#d11;
+    }
+    marquee{
         font-size:18px;
-        font-weight:500;
-        box-shadow:0 2px 10px rgba(0,0,0,0.1);
-        cursor:pointer;
-        transition:0.3s;
+        font-weight:700;
+        color:#d11;
     }
+/* BANNER */
+.banner{
+  width:100%;
+  height:140px;
+  background:url('banner.jpg') center/cover no-repeat;
+}
 
-    .menu-box:hover{
-        transform:scale(1.05);
-    }
+/* COUNTS */
+.counts{
+  display:flex;
+  justify-content:space-around;
+  margin:15px;
+}
+.count-box{
+  background:#fff;
+  width:45%;
+  border-radius:15px;
+  padding:15px;
+  text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+.count-box h3{margin:5px 0;font-size:22px;color:#5b0a6e;}
+.count-box p{margin:0;color:#555;}
 
-    .menu-box i{
-        font-size:28px;
-        margin-bottom:8px;
-        color:#007bff;
-    }
+/* GRID MENU */
+.menu{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+  padding:15px;
+}
+.menu a{
+  text-decoration:none;
+}
+.menu-box{
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+  text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  color:#333;
+  font-size:16px;
+}
+.menu-box:hover{background:#f9f4fb;}
 
-    /* Bottom Menu */
-    .bottom-menu{
-        position:fixed;
-        bottom:0;
-        left:0;
-        width:100%;
-        background:white;
-        display:flex;
-        justify-content:space-around;
-        padding:12px 0;
-        box-shadow:0 -3px 10px rgba(0,0,0,0.1);
-    }
-
-    .bottom-menu div{
-        text-align:center;
-        font-size:14px;
-        cursor:pointer;
-    }
-
-    .bottom-menu i{
-        font-size:22px;
-        display:block;
-        margin-bottom:3px;
-    }
-
-    /* Contact */
-    .contact-box{
-        text-align:center;
-        margin-bottom:70px;
-        font-size:16px;
-        color:#333;
-        font-weight:500;
-    }
-
-    .contact-box span{
-        color:#007bff;
-        font-weight:600;
-    }
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#fff;
+  display:flex;
+  justify-content:space-around;
+  border-top:1px solid #ddd;
+}
+.bottom-nav a{
+  padding:10px 0;
+  text-decoration:none;
+  color:#555;
+  font-size:14px;
+  text-align:center;
+  width:20%;
+}
+.bottom-nav a:hover{color:#5b0a6e;}
 </style>
-
-<!-- Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 </head>
+
 <body>
-<!-- Auto Audio Play -->
-<audio id="bgAudio" autoplay loop>
-    <source src="audio.mp3" type="audio/mpeg">
-</audio>
-<!-- Header -->
+
+<!-- HEADER -->
 <div class="header">
-    <img src="logo.png" alt="Logo">
-    <h2>Teacher Dashboard</h2>
+  <img src="logo.png" alt="Logo">
+  <h2>School Admin Dashboard</h2>
 </div>
 
-<!-- Marquee -->
-<div class="marq">
-    <marquee behavior="scroll" direction="left">Welcome Teacher — New Updates Available To home Work..... </marquee>
-</div>
-
-<!-- Banner -->
+<!-- BANNER -->
 <div class="banner">
-    <img src="6.png" alt="Banner">
+  <img src="banner.png" alt="School Banner" style="width:100%;height:140px;object-fit:cover;border-radius:0 0 15px 15px;">
+</div>
+<!-- Marquee -->
+<div class="marq-box">
+    <marquee behavior="scroll" direction="left">यहां आप home work, Notices, Post Add कर सकते हैं और इसमें जानकारी ऐड कर सकते हैं होमवर्क पर Class नाम ... कर देना जरूरी है सावधान शिक्षक। ......</marquee>
+</div>
+<!-- STUDENT & TEACHER COUNT -->
+<div class="counts">
+  <div class="count-box">
+    <h3>400</h3>
+    <p>Total Students</p>
+  </div>
+  <div class="count-box">
+    <h3>14</h3>
+    <p>Total Teachers</p>
+  </div>
 </div>
 
-<!-- Menu Cards -->
-<div class="menu-container">
+<!-- MAIN MENU -->
+<div class="menu">
+  <a href="admin-homework.html"><div class="menu-box"><img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="40"><br>Homework</div></a>
+  <a href="admin-notices.html"><div class="menu-box"><img src="https://cdn-icons-png.flaticon.com/512/1827/1827370.png" width="40"><br>Notices</div></a>
+  <a href="admin-post.html"><div class="menu-box"><img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" width="40"><br>Post</div></a>
+  <a href="#"><div class="menu-box"><img src="https://cdn-icons-png.flaticon.com/512/942/942748.png" width="40"><br>Form Data</div></a>
+</div></a>
 
-    <div class="menu-box" onclick="location.href='admin-homework.html'">
-        <i class="fa-solid fa-book"></i>
-        Home.Work
-    </div>
-
-    <div class="menu-box" onclick="location.href='admin-notices.html'">
-        <i class="fa-solid fa-bell"></i>
-        ...Notices...
-    </div>
-
-    <div class="menu-box" onclick="location.href='admin-post.html'">
-        <i class="fa-solid fa-image"></i>
-        Post Add
-    </div>
-
-    <div class="menu-box" onclick="location.href='sir.html'">
-        <i class="fa-solid fa-user-tie"></i>
-        Sir 😊
-    </div>
-
+<!-- BOTTOM NAVIGATION -->
+<div class="bottom-nav">
+  <a href="home.html"><img src="https://cdn-icons-png.flaticon.com/512/1946/1946488.png" width="22"><br>Home</a>
+  <a href="fee.html"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" width="22"><br>Fee</a>
+  <a href="login.html"><img src="https://cdn-icons-png.flaticon.com/512/1380/1380338.png" width="22"><br>Chat</a>
+  <a href="admin-homework.html"><img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="22"><br>Work</a>
 </div>
 
-<!-- Help / Contact -->
-<div class="contact-box">
-    Help / Contact: <span>9279600933</span>
-</div>
-
-<!-- Bottom Icons -->
-<div class="bottom-menu">
-    <div onclick="location.href='home.html'">
-        <i class="fa-solid fa-house"></i>Home
-    </div>
-    <div onclick="location.href='admin-notices.html'">
-        <i class="fa-solid fa-bell"></i>Notices
-    </div>
-    <div onclick="location.href='admin-post.html'">
-        <i class="fa-solid fa-image"></i>Post
-    </div>
-    <div onclick="location.href='sir.html'">
-        <i class="fa-solid fa-user-tie"></i>Sir 😊
-    </div>
-</div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let audio = document.getElementById("bgAudio");
-        audio.play().catch(() => {
-            document.body.addEventListener("click", () => {
-                audio.play();
-            }, { once: true });
-        });
-    });
-</script>
 </body>
 </html>
